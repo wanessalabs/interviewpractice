@@ -60,7 +60,7 @@ async function callClaude(prompt, systemPrompt = "") {
     body: JSON.stringify({
       model: "claude-sonnet-4-20250514",
       max_tokens: 1000,
-      system: systemPrompt || "You are an expert interview coach specializing in Google TPM interviews. Be specific, practical, and use STAR format where appropriate.",
+      system: systemPrompt || "You are an expert interview coach specializing in interviews. Be specific, practical, and use STAR format where appropriate.",
       messages: [{ role: "user", content: prompt }],
     }),
   });
@@ -73,13 +73,13 @@ async function saveToGoogleDrive(data, tool_call) {
   // Placeholder: in production this would use the Google Drive MCP
   // For now we use the persistent storage API
   try {
-    await window.storage.set("tpm_coach_data", JSON.stringify(data));
+    await window.storage.set("interview_coach_data", JSON.stringify(data));
   } catch (e) { console.warn("Storage save failed", e); }
 }
 
 async function loadFromGoogleDrive() {
   try {
-    const result = await window.storage.get("tpm_coach_data");
+    const result = await window.storage.get("interview_coach_data");
     return result ? JSON.parse(result.value) : null;
   } catch (e) { return null; }
 }
@@ -672,7 +672,7 @@ Focus on questions specific to this role. Mix behavioral, situational, and conce
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <div>
             <label style={{ fontSize: 11, fontWeight: 700, color: "#374151", display: "block", marginBottom: 5, fontFamily: "DM Mono, monospace", letterSpacing: "0.05em" }}>JOB NAME *</label>
-            <input value={jobName} onChange={e => setJobName(e.target.value)} placeholder="e.g. Google TPM L6 — Ads Platform"
+            <input value={jobName} onChange={e => setJobName(e.target.value)} placeholder="e.g. TPM L6 — Ads Platform"
               style={{ width: "100%", padding: "10px 12px", border: "1.5px solid #E5E7EB", borderRadius: 10, fontSize: 14, fontFamily: "DM Sans, sans-serif", boxSizing: "border-box" }} />
           </div>
           <div>
@@ -840,7 +840,7 @@ export default function App() {
   const handleGenerateAnswer = useCallback(async (catOrJobId, question, isJob = false) => {
     const resumeSnippet = profile?.resumeText ? `\n\nCandidate resume (use this to personalize the answer):\n${profile.resumeText.slice(0, 2000)}` : "";
     const nameCtx = profile?.name ? `\nCandidate name: ${profile.name}` : "";
-    const prompt = `Generate a strong STAR-format interview answer for a Google TPM interview.
+    const prompt = `Generate a strong STAR-format interview answer for a interview.
 
 Question: "${question.question}"
 Type: ${question.type}${nameCtx}${resumeSnippet}
